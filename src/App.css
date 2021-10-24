@@ -1,38 +1,69 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
+
+/* CHANGE */
+
+* {
+  font-family: 'Rubik', sans-serif;
+  color: #222831;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.chat-wrapper {
+  width: 28rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.chat-box {
+  height: 40rem;
+}
+
+@media screen and (max-width: 768px) {
+  .chat-box {
+    height: 76vh;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* CUSTOM */
+
+.bg-primary {
+  background-color: #1089ff !important;
 }
 
-.App-link {
-  color: #61dafb;
+.bg-secondary {
+  background-color: #f1f1f1 !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* ADD */
+
+.rounded-xl {
+  border-radius: 2rem;
 }
+
+.rounded-top-lg {
+  border-radius: 1.6rem 1.6rem 0 0;
+}
+
+.rounded-bottom-lg {
+  border-radius: 0 0 1.6rem 1.6rem;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.font-weight-medium {
+  font-weight: 500;
+}
+
+/* ::-webkit-scrollbar {
+  width: 0.375rem;
+}
+
+::-webkit-scrollbar-thumb {
+  width: 1em;
+  background-color: #a2a4a7;
+  outline: 1px solid #f1f1f1;
+  border-radius: 2rem;
+} */
