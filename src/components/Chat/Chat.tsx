@@ -1,37 +1,40 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import socket from '../../config/socket/ThemeSocket';
+import { ThemeContext } from '../../context/ThemeContext';
 import Login from '../Auth/Login';
 import Register from '../Auth/Register';
 import ChatForm from './ChatForm';
 import ChatList from './ChatList';
 
-interface UserDetail {
-  _id: string;
-  name: string;
-  username: string;
-  password: string;
-  createdAt: any;
-  updatedAt: any;
-}
-
-interface RoomDetail {
-  _id: string;
-  code: number;
-  name: string;
-  user_id: string;
-  createdAt: any;
-  updatedAt: any;
-}
-
-interface ChatProps {
-  user: UserDetail | undefined;
-  room: RoomDetail | undefined;
+interface IChatProps {
   handleAuth: () => void;
-  handleLogout: () => void;
 }
 
-const Chat = (props: ChatProps) => {
-  const [register, isRegister] = useState<boolean>(false);
-  const [login, isLogin] = useState<boolean>(true);
+interface IUser {
+  _id: String;
+  name: String;
+  username: String;
+  password: String;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface IChat {
+  _id: any;
+  text: String;
+  user_id: IUser;
+  room_id: String;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const Chat = (props: IChatProps) => {
+  const { state, dispatch } = useContext(ThemeContext);
+
+  const [register, isRegister] = useState<Boolean>(false);
+  const [login, isLogin] = useState<Boolean>(true);
+
+  const [chats, setChats] = useState<IChat[]>([]);
 
   const setStateDefaults = () => {
     isRegister(false);
@@ -48,50 +51,80 @@ const Chat = (props: ChatProps) => {
     isLogin(true);
   };
 
-  const handleAuth = () => {
-    props.handleAuth();
-  };
-
   const handleLogout = () => {
-    props.handleLogout();
-    setStateDefaults();
+    dispatch({ type: 'SET_LOGIN', payload: false });
+
+    localStorage.removeItem('token');
+
+    props.handleAuth();
+
+    return () => {
+      socket.emit('disconnect');
+      socket.off();
+    };
   };
 
   useEffect(() => {
-    if (props.user) {
+    if (state.user?._id && state.room?._id) {
+      socket.emit('join', {
+        user_id: state.user._id,
+        room_id: state.room._id,
+      });
+    }
+  }, [state.room]);
+
+  useEffect(() => {
+    socket.on('chat', (chat: any) => {
+      setChats([...chats, chat]);
+    });
+  }, [chats]);
+
+  useEffect(() => {
+    socket.emit('get-chats-history', state.room._id);
+    socket.on('get-chats', (chat: any) => {
+      setChats(chat);
+    });
+  }, [state.room]);
+
+  useEffect(() => {
+    if (state.isLogin) {
       isRegister(false);
       isLogin(false);
+    } else {
+      setStateDefaults();
     }
-  }, [props.user]);
+  }, [state.isLogin]);
 
   return (
     <>
       <div className="d-flex justify-content-center">
-        <div className="chat-wrapper bg-dark shadow-lg rounded-xl px-2 py-2">
-          <div className="bg-primary d-flex justify-content-between align-items-center rounded-top-lg px-2 py-3">
-            {props.user ? (
+        <div className="chat-wrapper px-2 py-2 bg-dark rounded-xl shadow-lg">
+          <div className="px-2 py-3 d-flex justify-content-between align-items-center bg-primary rounded-top-lg">
+            {state.isLogin ? (
               <h5
-                className="text-light ms-2 mb-0 cursor-pointer"
+                className="ms-2 mb-0 text-light cursor-pointer"
                 onClick={() => handleLogout()}
               >
-                {props.user.name}
+                {state.user.name}
               </h5>
             ) : (
-              <h4 className="text-light ms-2 mb-0">Messup</h4>
+              <h4 className="ms-2 mb-0 text-light">Messup</h4>
             )}
-            <h5 className="text-light me-2 mb-0">#{props.room?.code}</h5>
+            <h5 className="me-2 mb-0 text-light">#{state.room.code}</h5>
           </div>
           {register ? (
             <Register setLogin={() => setLogin()} />
           ) : login ? (
             <Login
               setRegister={() => setRegister()}
-              handleAuth={() => handleAuth()}
+              handleAuth={() => props.handleAuth()}
             />
           ) : (
-            <ChatList room={props.room} />
+            <>
+              <ChatList chats={chats} />
+              <ChatForm />
+            </>
           )}
-          <ChatForm room={props.room} />
         </div>
       </div>
     </>

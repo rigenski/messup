@@ -1,36 +1,46 @@
-interface ChatDetail {
-  _id: string;
-  text: string;
-  user_id: string;
-  room_id: string;
-  createdAt: any;
-  updatedAt: any;
+import { useContext } from 'react';
+import { ThemeContext } from '../../context/ThemeContext';
+
+interface IUser {
+  _id: String;
+  name: String;
+  username: String;
+  password: String;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface IChat {
+  _id: String;
+  text: String;
+  user_id: IUser;
+  room_id: String;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface ChatBoxProps {
-  send: boolean;
-  data: ChatDetail;
+  chat: IChat;
 }
 
 const ChatBox = (props: ChatBoxProps) => {
-  const { send } = props;
+  const { state } = useContext(ThemeContext);
+
   return (
     <>
-      {send ? (
-        <div className="bg-primary ms-auto w-75 px-3 py-2 px-2 mb-2 rounded-3">
-          <small className="m-0 text-white">{props.data.text}</small>
+      {props.chat.user_id?._id === state.user?._id ? (
+        <div className="ms-auto px-3 py-2 px-2 mb-2 w-75 bg-primary rounded-3 shadow-sm">
+          <small className="m-0 text-white">{props.chat.text}</small>
         </div>
       ) : (
-        <div className="bg-secondary me-auto w-75 px-3 py-2 px-2 mb-2 rounded-3">
+        <div className="me-auto px-3 py-2 px-2 mb-2 w-75 bg-light rounded-3 shadow-sm">
           <label
             className="text-primary font-weight-medium"
-            style={{ fontSize: '0.8rem' }}
+            style={{ fontSize: '0.86rem' }}
           >
-            rygenzx
+            {props.chat.user_id?.name}
           </label>
-          <small className="m-0 text-dark d-block">
-            Praesent sapien massa, convallis a pellentesque nec, egestas non nis
-          </small>
+          <small className="m-0 text-dark d-block">{props.chat.text}</small>
         </div>
       )}
     </>

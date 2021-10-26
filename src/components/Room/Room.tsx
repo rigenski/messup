@@ -1,68 +1,52 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import RoomCard from './RoomCard';
 import RoomForm from './RoomForm';
+import { ThemeContext } from './../../context/ThemeContext';
+import socket from '../../config/socket/ThemeSocket';
 
-interface UserDetail {
+interface IRoom {
   _id: string;
+  code: Number;
   name: string;
-  username: string;
-  password: string;
+  user_id: string;
   createdAt: any;
   updatedAt: any;
 }
 
-interface RoomProps {
-  user: UserDetail | undefined;
-  setRoom: (data: any) => void;
-}
+const Room = () => {
+  const { state } = useContext(ThemeContext);
 
-const Room = (props: RoomProps) => {
-  const [rooms, setRooms] = useState([]);
-  const [code, setCode] = useState<number | undefined>();
-
-  const getDataRooms = async () => {
-    const token = localStorage.getItem('token');
-
-    const config = {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    };
-
-    await axios
-      .get('room', config)
-      .then((res: any) => {
-        setRooms(res.data.result);
-      })
-      .catch((err: any) => {
-        console.log('error: ', err);
-      });
-  };
+  const [rooms, setRooms] = useState<IRoom[]>([]);
+  const [code, setCode] = useState<Number>(0);
 
   useEffect(() => {
-    getDataRooms();
+    socket.on('room', (room: any) => {
+      setRooms([...rooms, room]);
+    });
+  }, [rooms]);
+
+  useEffect(() => {
+    socket.emit('get-rooms-history');
+    socket.on('get-rooms', (rooms: any) => {
+      setRooms(rooms);
+    });
   }, []);
 
   return (
     <>
-      <h2 className="text-center mb-4">List Room</h2>
-      <RoomForm
-        code={code}
-        getDataRooms={() => getDataRooms()}
-        setRoom={(data) => props.setRoom(data)}
-      />
+      <h2 className="mb-4 text-dark text-center ">Messup</h2>
+      <RoomForm code={code} />
       <div className="mb-2">
-        <h4 className="mb-4">My Room</h4>
-        <div className="row mb-0">
+        <h4 className="mb-4 text-dark ">My Room</h4>
+        <div className="mb-0 row">
           {rooms
             .slice(0)
             .reverse()
-            .map((item: any, index) => {
-              if (item.user_id === props.user?._id) {
+            .map((item: any, index: any) => {
+              if (item.user_id === state.user?._id) {
                 return (
                   <div key={index} className="col-6">
-                    <RoomCard data={item} setCode={(code) => setCode(code)} />
+                    <RoomCard room={item} setCode={(code) => setCode(code)} />
                   </div>
                 );
               }
@@ -70,16 +54,16 @@ const Room = (props: RoomProps) => {
         </div>
       </div>
       <div className="mb-2">
-        <h4 className="mb-4">Public Room</h4>
-        <div className="row mb-0">
+        <h4 className="mb-4 text-dark">Public Room</h4>
+        <div className="mb-0 row">
           {rooms
             .slice(0)
             .reverse()
-            .map((item: any, index) => {
-              if (item.user_id !== props.user?._id) {
+            .map((item: any, index: any) => {
+              if (item.user_id !== state.user?._id) {
                 return (
                   <div key={index} className="col-6">
-                    <RoomCard data={item} setCode={(code) => setCode(code)} />
+                    <RoomCard room={item} setCode={(code) => setCode(code)} />
                   </div>
                 );
               }

@@ -1,60 +1,36 @@
-import axios from 'axios';
-import { useState } from 'react';
+import { FormEvent, useContext, useState } from 'react';
+import socket from '../../config/socket/ThemeSocket';
+import { ThemeContext } from '../../context/ThemeContext';
 
-interface RoomDetail {
-  _id: string;
-  code: number;
-  name: string;
-  user_id: string;
-  createdAt: any;
-  updatedAt: any;
-}
+const ChatForm = () => {
+  const { state } = useContext(ThemeContext);
 
-interface ChatFormProps {
-  room: RoomDetail | undefined;
-}
+  const [text, setText] = useState<String>('');
 
-const ChatForm = (props: ChatFormProps) => {
-  const [text, setText] = useState('');
-
-  const setStateDefaults = () => {
-    setText('');
-  };
-
-  const handleCreateChat = async (e: any) => {
+  const handleCreateChat = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const data = {
-      text: text,
-      room_id: props.room?._id,
-    };
-
-    await axios
-      .post('chat/create', data)
-      .then((res: any) => {
-        setStateDefaults();
-      })
-      .catch((err) => {
-        setStateDefaults();
-
-        console.log('error', err);
+    if (text) {
+      socket.emit('store-chat', text, state.room._id, () => {
+        setText('');
       });
+    }
   };
 
   return (
     <>
       <form
         onSubmit={(e) => handleCreateChat(e)}
-        className="d-flex bg-light rounded-bottom-lg px-2 py-2"
+        className="px-2 py-2 d-flex bg-secondary rounded-bottom-lg"
       >
         <input
           type="text"
-          className="form-control rounded-pill px-3 me-2"
+          className="form-control px-3 me-2 rounded-pill"
           placeholder="Type in here ..."
-          value={text}
+          value={String(text)}
           onChange={(e) => setText(e.target.value)}
         />
-        <button type="submit" className="btn bg-primary rounded-pill px-2">
+        <button type="submit" className="btn px-2 bg-primary rounded-pill">
           <i className="bi bi-cursor-fill px-1 text-white"></i>
         </button>
       </form>

@@ -1,4 +1,4 @@
-interface RoomDetail {
+interface IRoom {
   _id: string;
   code: number;
   name: string;
@@ -8,7 +8,7 @@ interface RoomDetail {
 }
 
 interface RoomCardProps {
-  data: RoomDetail;
+  room: IRoom;
   setCode: (code: number) => void;
 }
 
@@ -16,19 +16,19 @@ const RoomCard = (props: RoomCardProps) => {
   return (
     <>
       <a
-        href="#join__room-form"
-        className="card bg-primary cursor-pointer p-2 mb-3 w-100 text-decoration-none"
-        onClick={() => props.setCode(props.data.code)}
+        href="#"
+        className="card mb-3 p-2 w-100 bg-primary text-decoration-none cursor-pointer"
+        onClick={() => props.setCode(props.room.code)}
       >
         <div className="card-title d-flex justify-content-between">
-          <small className="text-white">{props.data.name}</small>
+          <small className="text-white">{props.room.name}</small>
           <small className="text-white">
-            {props.data.createdAt.slice(0, 10)}
+            {props.room.createdAt.slice(0, 10)}
           </small>
         </div>
         <div className="card-body pt-0">
-          <h1 className="card-title text-light text-center mb-0">
-            #{props.data.code}
+          <h1 className="card-title mb-0 text-light text-center">
+            #{props.room.code}
           </h1>
         </div>
       </a>

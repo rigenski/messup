@@ -1,9 +1,7 @@
-import React from 'react';
-
 const ChatBadge = () => {
   return (
     <>
-      <span className="badge bg-secondary font-weight-medium text-dark shadow-sm mb-3">
+      <span className="badge mb-3 bg-light font-weight-medium text-dark shadow-sm ">
         Yesterday
       </span>
     </>

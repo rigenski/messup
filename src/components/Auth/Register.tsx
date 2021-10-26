@@ -39,11 +39,13 @@ const Register = (props: RegisterProps) => {
 
   return (
     <>
-      <div className="chat-box d-flex flex-column justify-content-center align-items-center bg-light">
-        <h4>Register</h4>
+      <div className="auth-box d-flex flex-column justify-content-center align-items-center bg-secondary rounded-bottom-lg">
+        <h4 className="text-dark">Register</h4>
         <form onSubmit={(e) => handleRegister(e)} style={{ width: '75%' }}>
           <div className="form-group mb-2">
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name" className="text-dark">
+              Name
+            </label>
             <input
               type="text"
               className="form-control"
@@ -53,17 +55,22 @@ const Register = (props: RegisterProps) => {
             />
           </div>
           <div className="form-group mb-2">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username" className="text-dark">
+              Username
+            </label>
             <input
               type="text"
               className="form-control"
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              autoComplete="off"
             />
           </div>
           <div className="form-group mb-2">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password" className="text-dark">
+              Password
+            </label>
             <input
               type="password"
               className="form-control"
@@ -75,7 +82,7 @@ const Register = (props: RegisterProps) => {
           <div className="d-flex justify-content-between align-items-center">
             <a
               href="#"
-              className="text-primary text-decoration-none"
+              className="text-primary"
               onClick={() => props.setLogin()}
             >
               Login ?

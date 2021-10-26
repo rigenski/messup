@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
+import IllustrationLogin from './../../assets/images/illustration-login.png';
 
 interface LoginProps {
   setRegister: () => void;
@@ -41,11 +42,19 @@ const Login = (props: LoginProps) => {
 
   return (
     <>
-      <div className="chat-box d-flex flex-column justify-content-center align-items-center bg-light">
-        <h4>Login</h4>
+      <div className="auth-box d-flex flex-column justify-content-center align-items-center bg-secondary rounded-bottom-lg">
+        <img
+          src={IllustrationLogin}
+          alt=""
+          className="mb-4"
+          style={{ width: '60%' }}
+        />
+        <h4 className="text-dark">Login</h4>
         <form onSubmit={(e) => handleLogin(e)} style={{ width: '75%' }}>
           <div className="form-group mb-2">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username" className="text-dark">
+              Username
+            </label>
             <input
               type="text"
               className="form-control"
@@ -55,19 +64,22 @@ const Login = (props: LoginProps) => {
             />
           </div>
           <div className="form-group mb-2">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password" className="text-dark">
+              Password
+            </label>
             <input
               type="password"
               className="form-control"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="off"
             />
           </div>
           <div className="d-flex justify-content-between align-items-center">
             <a
               href="#"
-              className="text-primary text-decoration-none"
+              className="text-primary"
               onClick={() => props.setRegister()}
             >
               Register ?

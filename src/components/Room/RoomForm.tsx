@@ -1,43 +1,31 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { FormEvent, useContext, useEffect, useState } from 'react';
+import socket from '../../config/socket/ThemeSocket';
+import { ThemeContext } from '../../context/ThemeContext';
 
 interface RoomFormProps {
-  code: number | undefined;
-  getDataRooms: () => void;
-  setRoom: (data: any) => void;
+  code: Number;
 }
 
 const RoomForm = (props: RoomFormProps) => {
-  const [name, setName] = useState<string>('');
-  const [code, setCode] = useState<number>(0);
+  const { state, dispatch } = useContext(ThemeContext);
+
+  const [name, setName] = useState<String>('');
+  const [code, setCode] = useState<any>(0);
+
+  const handleCreateRoom = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    socket.emit('store-room', name, state.user._id);
+    setName('');
+  };
 
   const setStateDefaults = (): void => {
     setName('');
     setCode(0);
   };
 
-  const handleCreateRoom = async (e: any) => {
-    e.preventDefault();
-
-    const data = {
-      name: name,
-    };
-
-    await axios
-      .post('room/create', data)
-      .then((res: any) => {
-        setStateDefaults();
-
-        props.getDataRooms();
-      })
-      .catch((err) => {
-        setStateDefaults();
-
-        console.log('error', err);
-      });
-  };
-
-  const handleJoinRoom = async (e: any) => {
+  const handleJoinRoom = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     await axios
@@ -45,26 +33,22 @@ const RoomForm = (props: RoomFormProps) => {
       .then((res: any) => {
         setStateDefaults();
 
-        props.setRoom(res.data.result);
+        dispatch({ type: 'GET_ROOM', payload: res.data.result });
 
         localStorage.setItem('room', String(code));
       })
       .catch((err) => {
-        setStateDefaults();
-
-        console.log('error: ', err);
+        console.log(err);
       });
   };
 
   useEffect(() => {
-    if (props.code) {
-      setCode(props.code);
-    }
+    setCode(props.code);
   }, [props.code]);
 
   return (
     <>
-      <div className="d-flex justify-content-between mb-4">
+      <div className="mb-4 d-flex justify-content-between">
         <button
           className="btn btn-primary"
           data-toggle="collapse"
@@ -86,12 +70,12 @@ const RoomForm = (props: RoomFormProps) => {
             value={code === 0 ? '' : code}
             onChange={(e) => setCode(parseInt(e.target.value))}
           />
-          <button type="submit" className="btn btn-primary ms-2">
+          <button type="submit" className="ms-2 btn btn-primary">
             Join
           </button>
         </form>
       </div>
-      <div className="collapse row mb-4" id="collapseCreate">
+      <div className="mb-4 collapse row" id="collapseCreate">
         <form
           onSubmit={(e) => handleCreateRoom(e)}
           className="d-flex col-12 col-md-8"
@@ -100,10 +84,10 @@ const RoomForm = (props: RoomFormProps) => {
             type="text"
             className="form-control"
             placeholder="Name Room ..."
-            value={name}
+            value={String(name)}
             onChange={(e) => setName(e.target.value)}
           />
-          <button type="submit" className="btn btn-primary ms-2">
+          <button type="submit" className="ms-2 btn btn-primary">
             Go
           </button>
         </form>

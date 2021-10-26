@@ -1,34 +1,12 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import './App.css';
 import Chat from './components/Chat/Chat';
 import Room from './components/Room/Room';
-
-interface User {
-  _id: string;
-  name: string;
-  username: string;
-  password: string;
-  createdAt: any;
-  updatedAt: any;
-}
-
-interface Room {
-  _id: string;
-  code: number;
-  name: string;
-  user_id: string;
-  createdAt: any;
-  updatedAt: any;
-}
+import { ThemeContext } from './context/ThemeContext';
 
 function App() {
-  const [user, setUser] = useState<User>();
-  const [room, setRoom] = useState<Room>();
-
-  const setStateDefaults = () => {
-    setUser(undefined);
-  };
+  const { state, dispatch } = useContext(ThemeContext);
 
   const handleAuth = () => {
     const token = localStorage.getItem('token');
@@ -40,58 +18,51 @@ function App() {
         },
       };
 
-      axios.get('auth/profile', config).then(
-        (res: any) => {
-          setUser(res.data.result);
+      axios
+        .get('auth/profile', config)
+        .then((res: any) => {
+          dispatch({ type: 'GET_USER', payload: res.data.result });
+          dispatch({ type: 'SET_LOGIN', payload: true });
 
           axios.defaults.headers.common['Authorization'] =
             'Bearer ' + localStorage.getItem('token');
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
+        })
+        .catch((err) => {
+          localStorage.setItem('token', '');
+
+          console.log('error: ', err.message);
+        });
     } else {
-      setStateDefaults();
+      dispatch({ type: 'GET_USER', payload: null });
+      dispatch({ type: 'SET_LOGIN', payload: false });
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-
-    handleAuth();
-  };
-
   const getDataRoom = async () => {
-    const token = localStorage.getItem('token');
     const code = localStorage.getItem('room');
 
-    if (token) {
-      const config = {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      };
-
-      if (code) {
-        await axios
-          .get(`room/${code}`, config)
-          .then((res: any) => {
-            setRoom(res.data.result);
-
-            localStorage.setItem('room', code);
-          })
-          .catch((err) => {
-            console.log('error: ', err);
-          });
-      }
+    if (code) {
+      await axios
+        .get(`room/${code}`)
+        .then((res: any) => {
+          dispatch({ type: 'GET_ROOM', payload: res.data.result });
+          dispatch({ type: 'GET_ROOM', payload: res.data.result });
+        })
+        .catch((err: any) => {
+          console.log('error: ', err.message);
+        });
     }
   };
 
   useEffect(() => {
     handleAuth();
-    getDataRoom();
   }, []);
+
+  useEffect(() => {
+    if (state.isLogin) {
+      getDataRoom();
+    }
+  }, [state.isLogin]);
 
   return (
     <>
@@ -99,17 +70,10 @@ function App() {
         <div className="container my-3 my-md-5">
           <div className="row">
             <div className="col-12 col-lg-6 col-xl-5 mb-5">
-              <Chat
-                user={user}
-                room={room}
-                handleAuth={() => handleAuth()}
-                handleLogout={() => handleLogout()}
-              />
+              <Chat handleAuth={() => handleAuth()} />
             </div>
             <div className="col-12 col-lg-6 col-xl-7 mb-5">
-              {user ? (
-                <Room user={user} setRoom={(data) => setRoom(data)} />
-              ) : null}
+              {state.isLogin ? <Room /> : null}
             </div>
           </div>
         </div>
