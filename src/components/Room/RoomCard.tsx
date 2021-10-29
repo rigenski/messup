@@ -17,7 +17,7 @@ const RoomCard = (props: RoomCardProps) => {
     <>
       <a
         href="#"
-        className="card mb-3 p-2 w-100 bg-primary text-decoration-none cursor-pointer"
+        className="card mb-3 p-3 w-100 bg-primary text-decoration-none rounded-md cursor-pointer"
         onClick={() => props.setCode(props.room.code)}
       >
         <div className="card-title d-flex justify-content-between">
@@ -26,7 +26,7 @@ const RoomCard = (props: RoomCardProps) => {
             {props.room.createdAt.slice(0, 10)}
           </small>
         </div>
-        <div className="card-body pt-0">
+        <div className="card-body p-0 pb-2">
           <h1 className="card-title mb-0 text-light text-center">
             #{props.room.code}
           </h1>

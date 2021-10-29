@@ -48,9 +48,9 @@ const RoomForm = (props: RoomFormProps) => {
 
   return (
     <>
-      <div className="mb-4 d-flex justify-content-between">
+      <div className="mb-3 d-flex justify-content-between">
         <button
-          className="btn btn-primary"
+          className="btn btn-primary rounded-pill"
           data-toggle="collapse"
           data-target="#collapseCreate"
           aria-expanded="false"
@@ -65,29 +65,29 @@ const RoomForm = (props: RoomFormProps) => {
         >
           <input
             type="number"
-            className="form-control"
+            className="form-control ms-2 rounded-pill"
             placeholder="Input Code ..."
             value={code === 0 ? '' : code}
             onChange={(e) => setCode(parseInt(e.target.value))}
           />
-          <button type="submit" className="ms-2 btn btn-primary">
+          <button type="submit" className="ms-2 btn btn-primary rounded-pill">
             Join
           </button>
         </form>
       </div>
-      <div className="mb-4 collapse row" id="collapseCreate">
+      <div className="mb-3 collapse row" id="collapseCreate">
         <form
           onSubmit={(e) => handleCreateRoom(e)}
           className="d-flex col-12 col-md-8"
         >
           <input
             type="text"
-            className="form-control"
+            className="form-control rounded-pill"
             placeholder="Name Room ..."
             value={String(name)}
             onChange={(e) => setName(e.target.value)}
           />
-          <button type="submit" className="ms-2 btn btn-primary">
+          <button type="submit" className="ms-2 btn btn-primary rounded-pill">
             Go
           </button>
         </form>

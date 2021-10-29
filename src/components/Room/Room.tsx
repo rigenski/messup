@@ -34,10 +34,10 @@ const Room = () => {
 
   return (
     <>
-      <h2 className="mb-4 text-dark text-center ">Messup</h2>
+      <h2 className="mb-4 text-primary text-center ">Messup</h2>
       <RoomForm code={code} />
       <div className="mb-2">
-        <h4 className="mb-4 text-dark ">My Room</h4>
+        <h4 className="mb-4 text-primary ">My Room</h4>
         <div className="mb-0 row">
           {rooms
             .slice(0)
@@ -54,7 +54,7 @@ const Room = () => {
         </div>
       </div>
       <div className="mb-2">
-        <h4 className="mb-4 text-dark">Public Room</h4>
+        <h4 className="mb-4 text-primary">Public Room</h4>
         <div className="mb-0 row">
           {rooms
             .slice(0)

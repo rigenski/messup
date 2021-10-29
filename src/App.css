@@ -52,6 +52,7 @@
 }
 
 .btn-primary {
+  padding: 0.625rem 1.5rem !important;
   background: #6669c4 !important;
 }
 
@@ -66,6 +67,10 @@
   box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px !important;
 }
 
+.form-control {
+  padding: 0.625rem 1.5rem;
+}
+
 /* ADD */
 
 .rounded-xl {
@@ -73,11 +78,15 @@
 }
 
 .rounded-top-lg {
-  border-radius: 1.6rem 1.6rem 0 0;
+  border-radius: 1.5rem 1.5rem 0 0;
 }
 
 .rounded-bottom-lg {
-  border-radius: 0 0 1.6rem 1.6rem;
+  border-radius: 0 0 1.5rem 1.5rem;
+}
+
+.rounded-md {
+  border-radius: 1rem;
 }
 
 .overflow-y-scroll {

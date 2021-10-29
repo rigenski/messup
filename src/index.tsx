@@ -6,9 +6,15 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
+import * as dotenv from 'dotenv';
+
 import { ThemeProvider } from './context/ThemeContext';
 
-axios.defaults.baseURL = 'http://localhost:8000/api/v1/';
+dotenv.config();
+
+const BASE_URL_API = `${process.env.REACT_APP_BASE_URL_API}/api/v1/`;
+
+axios.defaults.baseURL = BASE_URL_API;
 
 ReactDOM.render(
   <React.StrictMode>

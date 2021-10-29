@@ -30,7 +30,7 @@ const ChatForm = () => {
           value={String(text)}
           onChange={(e) => setText(e.target.value)}
         />
-        <button type="submit" className="btn px-2 bg-primary rounded-pill">
+        <button type="submit" className="btn btn-primary rounded-pill">
           <i className="bi bi-cursor-fill px-1 text-white"></i>
         </button>
       </form>

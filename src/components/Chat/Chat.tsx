@@ -5,6 +5,7 @@ import Login from '../Auth/Login';
 import Register from '../Auth/Register';
 import ChatForm from './ChatForm';
 import ChatList from './ChatList';
+import ChatNull from './ChatNull';
 
 interface IChatProps {
   handleAuth: () => void;
@@ -54,7 +55,7 @@ const Chat = (props: IChatProps) => {
   const handleLogout = () => {
     dispatch({ type: 'SET_LOGIN', payload: false });
 
-    localStorage.removeItem('token');
+    localStorage.clear();
 
     props.handleAuth();
 
@@ -87,30 +88,32 @@ const Chat = (props: IChatProps) => {
   }, [state.room]);
 
   useEffect(() => {
-    if (state.isLogin) {
+    if (state.isAuthenticated) {
       isRegister(false);
       isLogin(false);
     } else {
       setStateDefaults();
     }
-  }, [state.isLogin]);
+  }, [state.isAuthenticated]);
 
   return (
     <>
       <div className="d-flex justify-content-center">
         <div className="chat-wrapper px-2 py-2 bg-dark rounded-xl shadow-lg">
           <div className="px-2 py-3 d-flex justify-content-between align-items-center bg-primary rounded-top-lg">
-            {state.isLogin ? (
-              <h5
-                className="ms-2 mb-0 text-light cursor-pointer"
-                onClick={() => handleLogout()}
-              >
-                {state.user.name}
-              </h5>
+            {state.isAuthenticated ? (
+              <>
+                <h5
+                  className="ms-2 mb-0 text-light cursor-pointer"
+                  onClick={() => handleLogout()}
+                >
+                  {state.user.name}
+                </h5>
+                <h5 className="me-2 mb-0 text-light">#{state.room.code}</h5>
+              </>
             ) : (
               <h4 className="ms-2 mb-0 text-light">Messup</h4>
             )}
-            <h5 className="me-2 mb-0 text-light">#{state.room.code}</h5>
           </div>
           {register ? (
             <Register setLogin={() => setLogin()} />
@@ -119,11 +122,13 @@ const Chat = (props: IChatProps) => {
               setRegister={() => setRegister()}
               handleAuth={() => props.handleAuth()}
             />
-          ) : (
+          ) : state.room?._id ? (
             <>
               <ChatList chats={chats} />
               <ChatForm />
             </>
+          ) : (
+            <ChatNull />
           )}
         </div>
       </div>

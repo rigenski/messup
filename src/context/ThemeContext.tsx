@@ -21,13 +21,13 @@ interface IRoom {
 interface IState {
   user: IUser | any;
   room: IRoom | any;
-  isLogin: Boolean;
+  isAuthenticated: Boolean;
 }
 
 const initialState = {
   user: [],
   room: [],
-  isLogin: false,
+  isAuthenticated: false,
 };
 
 const ThemeContext = createContext<{
@@ -53,7 +53,7 @@ const reducer = (state: any, action: any) => {
     case 'SET_LOGIN':
       return {
         ...state,
-        isLogin: action.payload,
+        isAuthenticated: action.payload,
       };
     default:
       return state;

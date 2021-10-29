@@ -59,10 +59,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (state.isLogin) {
+    if (state.isAuthenticated) {
       getDataRoom();
     }
-  }, [state.isLogin]);
+  }, [state.isAuthenticated]);
 
   return (
     <>
@@ -73,7 +73,7 @@ function App() {
               <Chat handleAuth={() => handleAuth()} />
             </div>
             <div className="col-12 col-lg-6 col-xl-7 mb-5">
-              {state.isLogin ? <Room /> : null}
+              {state.isAuthenticated ? <Room /> : null}
             </div>
           </div>
         </div>
